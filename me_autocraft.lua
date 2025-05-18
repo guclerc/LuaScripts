@@ -138,7 +138,7 @@ function commandLoop()
         
 
         if cmd == "quit" or cmd == "q" then
-            print("Arrêt du programme demandé.")
+            print("Arrêt du programme.")
             break
         end
 
@@ -148,7 +148,7 @@ function commandLoop()
             if label and name and threshold then
                 table.insert(config, { label = label, name = name, threshold = threshold })
                 saveConfig(config)
-                print("Ajouté : " .. label)
+                print("Ajoute : " .. label)
             else
                 print("Usage : add <label> <name> <threshold>")
             end
@@ -159,7 +159,7 @@ function commandLoop()
             if index then
                 table.remove(config, index)
                 saveConfig(config)
-                print("Supprimé : " .. label)
+                print("Supprime : " .. label)
             else
                 print("Introuvable : " .. (label or ""))
             end
@@ -195,7 +195,7 @@ function commandLoop()
                 item.label = newLabel
                 config[index] = item
                 saveConfig(config)
-                print("Label mis à jour : " .. newLabel)
+                print("Label mis a jour : " .. newLabel)
             else
                 print("Usage : label <ancien_label> <nouveau_label>")
             end
