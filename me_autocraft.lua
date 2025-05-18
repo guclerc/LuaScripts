@@ -64,20 +64,20 @@ function checkMe(item)
         return
     end
 
-    local count = tonumber(meItem.count or 0)
+    local amount = tonumber(meItem.amount or 0)
     row = row + 1
     CenterT(label, row, colors.black, colors.lightGray, "left", false)
 
-    if count < threshold then
-        CenterT(count .. "/" .. threshold, row, colors.black, colors.red, "right", true)
+    if amount < threshold then
+        CenterT(amount .. "/" .. threshold, row, colors.black, colors.red, "right", true)
 
         if not me.isItemCrafting({ name = name }) then
-            local toCraft = threshold - count
-            me.craftItem({ name = name, count = toCraft })
+            local toCraft = threshold - amount
+            me.craftItem({ name = name, amount = toCraft })
             print("Craft de " .. name .. " x" .. toCraft)
         end
     else
-        CenterT(count .. "/" .. threshold, row, colors.black, colors.green, "right", true)
+        CenterT(amount .. "/" .. threshold, row, colors.black, colors.green, "right", true)
     end
 end
 
