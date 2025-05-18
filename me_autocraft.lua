@@ -1,3 +1,6 @@
+-- CraftAuto : https://github.com/guclerc/LuaScripts/blob/main/me_autocraft.lua
+-- Inspiré de SirEndii : https://github.com/SirEndii/Lua-Projects
+
 --////-- Ecrans
 
 -- Chargement des périphériques
