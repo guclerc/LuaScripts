@@ -93,7 +93,7 @@ end
 
 -- Boucle monitor
 function monitorLoop()
-    local label = "Automatic"
+    local label = "Craft Auto -- Kaza"
     prepareMonitor(label)
 
     while true do
@@ -141,8 +141,8 @@ end
 
 -- Boucle d'interface pc
 function commandLoop()
+    help()
     while true do
-        help()
         term.write("> ")
         local input = read()
         local args = {}
