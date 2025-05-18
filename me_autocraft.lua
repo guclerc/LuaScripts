@@ -81,7 +81,7 @@ function checkMe(item)
 
         if not me.isItemCrafting({ name = name }) then
             local toCraft = threshold - amount
-            me.craftItem({ name = name, amount = toCraft })
+            me.craftItem({ name = name, count = toCraft })
             print("Craft de " .. name .. " x" .. toCraft)
         end
     else
