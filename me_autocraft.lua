@@ -1,3 +1,5 @@
+--////-- Ecrans
+
 -- Chargement des périphériques
 me = peripheral.find("meBridge")
 mon = peripheral.find("monitor")
@@ -101,14 +103,101 @@ function monitorLoop()
     end
 end
 
--- Boucle d'interface pc
-local function commandLoop()
-    while true do
-      term.write("> ")
-      local input = read()
-      -- Analyse et exécution de la commande (add, remove, set, find, list)
-    end
-  end
 
--- Lancement en parallèle
+--////-- Interface
+function saveConfig(config)
+    local file = fs.open("meautocraft_config.lua", "w")
+    file.write("return " .. textutils.serialize(config))
+    file.close()
+end
+
+function loadConfig()
+    local ok, config = pcall(require, "meautocraft_config")
+    if ok then return config else return {} end
+end
+
+-- Cherche un item en config
+function findItem(config, label)
+    label = string.lower(label)
+    for i, item in ipairs(config) do
+        if string.lower(item.label) == label then
+            return i, item
+        end
+    end
+    return nil, nil
+end
+
+-- Boucle d'interface pc
+function commandLoop()
+    while true do
+        term.write("> ")
+        local input = read()
+        local args = {}
+        for word in string.gmatch(input, "%S+") do table.insert(args, word) end
+        local cmd = string.lower(args[1] or "")
+        local config = loadConfig()
+
+        if cmd == "add" or cmd == "a" then
+            local label, name, threshold = args[2], args[3], tonumber(args[4])
+            if label and name and threshold then
+                table.insert(config, { label = label, name = name, threshold = threshold })
+                saveConfig(config)
+                print("Ajouté : " .. label)
+            else
+                print("Usage : add <label> <name> <threshold>")
+            end
+
+        elseif cmd == "delete" or cmd == "d" then
+            local label = args[2]
+            local index = label and findItem(config, label)
+            if index then
+                table.remove(config, index)
+                saveConfig(config)
+                print("Supprimé : " .. label)
+            else
+                print("Introuvable : " .. (label or ""))
+            end
+
+        elseif cmd == "threshold" or cmd == "t" then
+            local label, newThreshold = args[2], tonumber(args[3])
+            local index, item = findItem(config, label)
+            if item and newThreshold then
+                item.threshold = newThreshold
+                config[index] = item
+                saveConfig(config)
+                print("Nouveau seuil pour " .. item.label .. ": " .. newThreshold)
+            else
+                print("Usage : threshold <label> <new threshold>")
+            end
+
+        elseif cmd == "name" or cmd == "n" then
+            local label, newName = args[2], args[3]
+            local index, item = findItem(config, label)
+            if item and newName then
+                item.name = newName
+                config[index] = item
+                saveConfig(config)
+                print("Nouveau nom pour " .. item.label .. ": " .. newName)
+            else
+                print("Usage : name <label> <new item name>")
+            end
+
+        elseif cmd == "get" or cmd == "g" then
+            local label = args[2]
+            local _, item = findItem(config, label)
+            if item then
+                print("Label: " .. item.label)
+                print("Name: " .. item.name)
+                print("Threshold: " .. item.threshold)
+            else
+                print("Introuvable : " .. (label or ""))
+            end
+
+        else
+            print("Commandes : add (a), delete (d), threshold (t), name (n), get (g)")
+        end
+    end
+end
+
+--////-- Lancement en parallèle
 parallel.waitForAny(monitorLoop, commandLoop)
