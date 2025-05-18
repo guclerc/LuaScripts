@@ -10,10 +10,13 @@ configChanged = true
 me = peripheral.find("meBridge")
 mon = peripheral.find("monitor")
 
--- Chargement dynamique de la configuration
+-- Chargement dynamique de la configuration (triée par label)
 function loadConfig()
     local ok, config = pcall(require, "meautocraft_config")
-    if ok then
+    if ok and type(config) == "table" then
+        table.sort(config, function(a, b)
+            return string.lower(a.label) < string.lower(b.label)
+        end)
         return config
     else
         print("Erreur de chargement du fichier de configuration.")
