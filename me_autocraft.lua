@@ -135,8 +135,14 @@ function commandLoop()
         local args = {}
         for word in string.gmatch(input, "%S+") do table.insert(args, word) end
         local cmd = string.lower(args[1] or "")
-        local config = loadConfig()
+        
 
+        if cmd == "quit" or cmd == "q" then
+            print("Arrêt du programme demandé.")
+            break
+        end
+
+        local config = loadConfig()
         if cmd == "add" or cmd == "a" then
             local label, name, threshold = args[2], args[3], tonumber(args[4])
             if label and name and threshold then
@@ -180,6 +186,18 @@ function commandLoop()
                 print("Nouveau nom pour " .. item.label .. ": " .. newName)
             else
                 print("Usage : name <label> <new item name>")
+            end
+
+        elseif cmd == "label" or cmd == "l" then
+            local oldLabel, newLabel = args[2], args[3]
+            local index, item = findItem(config, oldLabel)
+            if item and newLabel then
+                item.label = newLabel
+                config[index] = item
+                saveConfig(config)
+                print("Label mis à jour : " .. newLabel)
+            else
+                print("Usage : label <ancien_label> <nouveau_label>")
             end
 
         elseif cmd == "get" or cmd == "g" then
