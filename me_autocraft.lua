@@ -1,6 +1,9 @@
 -- CraftAuto : https://github.com/guclerc/LuaScripts/blob/main/me_autocraft.lua
 -- Inspiré de SirEndii : https://github.com/SirEndii/Lua-Projects
 
+--////-- Global
+configChanged = true
+
 --////-- Ecrans
 
 -- Chargement des périphériques
@@ -98,9 +101,14 @@ end
 function monitorLoop()
     local label = "Craft Auto -- Kaza"
     prepareMonitor(label)
+    local config = nil
 
     while true do
-        local config = loadConfig()
+        if configChanged then
+            prepareMonitor(label)
+            config = loadConfig()
+            configChanged = false
+        end
         checkTable(config)
         sleep(1)
     end
@@ -112,6 +120,7 @@ function saveConfig(config)
     local file = fs.open("meautocraft_config.lua", "w")
     file.write("return " .. textutils.serialize(config))
     file.close()
+    configChanged = true
 end
 
 function loadConfig()
