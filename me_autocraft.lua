@@ -116,6 +116,13 @@ function loadConfig()
     if ok then return config else return {} end
 end
 
+function normalizeLabel(str)
+    -- Remplace les underscores par des espaces
+    str = string.gsub(str, "_", " ")
+    -- Met en majuscule la première lettre de chaque mot
+    return string.gsub(" " .. str, "%W%l", string.upper):sub(2)
+end
+
 -- Cherche un item en config
 function findItem(config, label)
     label = string.lower(label)
@@ -127,9 +134,15 @@ function findItem(config, label)
     return nil, nil
 end
 
+-- Affichage du help
+function help()
+    print("Commandes : quit (q), add (a), delete (d), threshold (t), name (n), label (l), get (g)")
+end
+
 -- Boucle d'interface pc
 function commandLoop()
     while true do
+        help()
         term.write("> ")
         local input = read()
         local args = {}
@@ -144,7 +157,7 @@ function commandLoop()
 
         local config = loadConfig()
         if cmd == "add" or cmd == "a" then
-            local label, name, threshold = args[2], args[3], tonumber(args[4])
+            local label, name, threshold = normalizeLabel(args[2]), args[3], tonumber(args[4])
             if label and name and threshold then
                 table.insert(config, { label = label, name = name, threshold = threshold })
                 saveConfig(config)
@@ -154,7 +167,7 @@ function commandLoop()
             end
 
         elseif cmd == "delete" or cmd == "d" then
-            local label = args[2]
+            local label = normalizeLabel(args[2])
             local index = label and findItem(config, label)
             if index then
                 table.remove(config, index)
@@ -165,7 +178,7 @@ function commandLoop()
             end
 
         elseif cmd == "threshold" or cmd == "t" then
-            local label, newThreshold = args[2], tonumber(args[3])
+            local label, newThreshold = normalizeLabel(args[2]), tonumber(args[3])
             local index, item = findItem(config, label)
             if item and newThreshold then
                 item.threshold = newThreshold
@@ -177,7 +190,7 @@ function commandLoop()
             end
 
         elseif cmd == "name" or cmd == "n" then
-            local label, newName = args[2], args[3]
+            local label, newName = normalizeLabel(args[2]), args[3]
             local index, item = findItem(config, label)
             if item and newName then
                 item.name = newName
@@ -189,7 +202,7 @@ function commandLoop()
             end
 
         elseif cmd == "label" or cmd == "l" then
-            local oldLabel, newLabel = args[2], args[3]
+            local oldLabel, newLabel = normalizeLabel(args[2]), normalizeLabel(args[3])
             local index, item = findItem(config, oldLabel)
             if item and newLabel then
                 item.label = newLabel
@@ -201,7 +214,7 @@ function commandLoop()
             end
 
         elseif cmd == "get" or cmd == "g" then
-            local label = args[2]
+            local label = normalizeLabel(args[2])
             local _, item = findItem(config, label)
             if item then
                 print("Label: " .. item.label)
@@ -212,7 +225,8 @@ function commandLoop()
             end
 
         else
-            print("Commandes : quit (q), add (a), delete (d), threshold (t), name (n), label (l), get (g)")
+            print("Commande introuvable")
+            help()
         end
     end
 end
