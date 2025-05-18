@@ -138,7 +138,7 @@ function commandLoop()
         
 
         if cmd == "quit" or cmd == "q" then
-            print("Arrêt du programme.")
+            print("Arret du programme.")
             break
         end
 
