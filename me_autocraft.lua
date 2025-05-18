@@ -212,7 +212,7 @@ function commandLoop()
             end
 
         else
-            print("Commandes : add (a), delete (d), threshold (t), name (n), get (g)")
+            print("Commandes : quit (q), add (a), delete (d), threshold (t), name (n), label (l), get (g)")
         end
     end
 end
