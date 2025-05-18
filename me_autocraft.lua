@@ -89,7 +89,7 @@ function checkTable(meItems)
     end
 end
 
--- Boucle principale
+-- Boucle monitor
 function monitorLoop()
     local label = "Automatic"
     prepareMonitor(label)
@@ -101,5 +101,14 @@ function monitorLoop()
     end
 end
 
--- Appel initial
-monitorLoop()
+-- Boucle d'interface pc
+local function commandLoop()
+    while true do
+      term.write("> ")
+      local input = read()
+      -- Analyse et exécution de la commande (add, remove, set, find, list)
+    end
+  end
+
+-- Lancement en parallèle
+parallel.waitForAny(monitorLoop, commandLoop)
