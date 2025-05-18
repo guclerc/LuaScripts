@@ -10,13 +10,10 @@ configChanged = true
 me = peripheral.find("meBridge")
 mon = peripheral.find("monitor")
 
--- Chargement dynamique de la configuration (triée par label)
+-- Chargement dynamique de la configuration
 function loadConfig()
     local ok, config = pcall(require, "meautocraft_config")
-    if ok and type(config) == "table" then
-        table.sort(config, function(a, b)
-            return string.lower(a.label) < string.lower(b.label)
-        end)
+    if ok then
         return config
     else
         print("Erreur de chargement du fichier de configuration.")
@@ -120,8 +117,12 @@ end
 
 --////-- Interface
 function saveConfig(config)
+    local sortedConfig = config
+    table.sort(config, function(a, b)
+        return string.lower(a.label) < string.lower(b.label)
+    end)
     local file = fs.open("meautocraft_config.lua", "w")
-    file.write("return " .. textutils.serialize(config))
+    file.write("return " .. textutils.serialize(sortedConfig))
     file.close()
     configChanged = true
 end
