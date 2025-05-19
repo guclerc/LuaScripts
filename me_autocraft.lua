@@ -101,14 +101,14 @@ function checkMe(item)
             CenterT(amount/1000 .. "B/" .. threshold/1000 .. "B", row, colors.black, colors.red, "right", true)
             if not me.isFluidCrafting({ name = name }) then
                 me.craftFluid({ name = name, amount = math.ceil(toCraft/1000) })
+                print("Commande de " .. math.ceil(toCraft/1000) .. " " .. name)
             end
-            print("Commande de " .. math.ceil(toCraft/1000) .. " " .. label)
         else
             CenterT(amount .. "/" .. threshold, row, colors.black, colors.red, "right", true)
             if not me.isItemCrafting({ name = name }) then
                 me.craftItem({ name = name, amount = toCraft })
+                print("Commande de " .. toCraft .. " " .. label)
             end
-            print("Commande de " .. toCraft .. " " .. label)
         end
         
     else
