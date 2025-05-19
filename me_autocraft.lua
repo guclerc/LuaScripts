@@ -65,7 +65,7 @@ function getFluid(name)
     local fluids = me.listFluid()
     for _, fluid in ipairs(fluids) do
         if fluid.name == name then
-            fluid.amount = fluid.amount / 1000
+            fluid.amount = fluid.amount
             return fluid
         end
     end
@@ -97,13 +97,14 @@ function checkMe(item)
 
     local amount = tonumber(meItem.amount or 0)
     if amount < threshold then
-        CenterT(amount .. "/" .. threshold, row, colors.black, colors.red, "right", true)
         local toCraft = threshold - amount
         if isFluid then
+            CenterT(amount/1000 .. "B/" .. threshold/1000 .. "B", row, colors.black, colors.red, "right", true)
             if not me.isFluidCrafting({ name = name }) then
-                me.craftFluid({ name = name, amount = toCraft*1000 })
+                me.craftFluid({ name = name, amount = toCraft })
             end
         else
+            CenterT(amount .. "/" .. threshold, row, colors.black, colors.red, "right", true)
             if not me.isItemCrafting({ name = name }) then
                 me.craftItem({ name = name, amount = toCraft })
             end
@@ -232,6 +233,10 @@ function commandLoop()
             local label, newThreshold = normalizeLabel(args[2]), tonumber(args[3])
             local index, item = findItem(config, label)
             if item and newThreshold then
+                local isFluid = item.isFluid or false
+                if isFluid then
+                    newThreshold = newThreshold*1000
+                end
                 item.threshold = newThreshold
                 config[index] = item
                 saveConfig(config)
