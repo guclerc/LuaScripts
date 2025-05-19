@@ -89,10 +89,12 @@ function checkMe(item)
         return
     end
 
-    local amount = tonumber(meItem.amount or 0)
     row = row + 1
-    CenterT(label, row, colors.black, colors.lightGray, "left", false)
+    
+    local labelColor = item.isFluid and colors.lightBlue or colors.lightGray
+    CenterT(label, row, colors.black, labelColor, "left", false)
 
+    local amount = tonumber(meItem.amount or 0)
     if amount < threshold then
         CenterT(amount .. "/" .. threshold, row, colors.black, colors.red, "right", true)
         local toCraft = threshold - amount
