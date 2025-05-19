@@ -111,7 +111,11 @@ function checkMe(item)
         end
         print("Commande de " .. toCraft .. " " .. label)
     else
-        CenterT(amount .. "/" .. threshold, row, colors.black, colors.green, "right", true)
+        if isFluid then
+            CenterT(amount/1000 .. "B/" .. threshold/1000 .. "B", row, colors.black, colors.green, "right", true)
+        else
+            CenterT(amount .. "/" .. threshold, row, colors.black, colors.green, "right", true)
+        end
     end
 end
 
