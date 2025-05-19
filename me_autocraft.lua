@@ -65,6 +65,7 @@ function getFluid(name)
     local fluids = me.listFluid()
     for _, fluid in ipairs(fluids) do
         if fluid.name == name then
+            fluid.amount = fluid.amount / 1000
             return fluid
         end
     end
@@ -100,7 +101,7 @@ function checkMe(item)
         local toCraft = threshold - amount
         if isFluid then
             if not me.isFluidCrafting({ name = name }) then
-                me.craftFluid({ name = name, amount = toCraft })
+                me.craftFluid({ name = name, amount = toCraft*1000 })
             end
         else
             if not me.isItemCrafting({ name = name }) then
