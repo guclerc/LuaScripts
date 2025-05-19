@@ -100,7 +100,7 @@ function checkMe(item)
         if isFluid then
             CenterT(amount/1000 .. "B/" .. threshold/1000 .. "B", row, colors.black, colors.red, "right", true)
             if not me.isFluidCrafting({ name = name }) then
-                me.craftFluid({ name = name, amount = toCraft })
+                me.craftFluid({ name = name, count = toCraft })
                 print("Commande de " .. toCraft .. " " .. name)
             end
         else
