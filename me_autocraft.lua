@@ -62,7 +62,7 @@ end
 
 -- Recupere un fluide
 function getFluid(name)
-    local fluids = me.listFluids()
+    local fluids = me.listFluid()
     for _, fluid in ipairs(fluids) do
         if fluid.name == name then
             return fluid
@@ -90,7 +90,7 @@ function checkMe(item)
     end
 
     row = row + 1
-    
+
     local labelColor = item.isFluid and colors.lightBlue or colors.lightGray
     CenterT(label, row, colors.black, labelColor, "left", false)
 
