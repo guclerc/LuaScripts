@@ -65,7 +65,6 @@ function getFluid(name)
     local fluids = me.listFluid()
     for _, fluid in ipairs(fluids) do
         if fluid.name == name then
-            fluid.amount = fluid.amount
             return fluid
         end
     end
@@ -103,13 +102,15 @@ function checkMe(item)
             if not me.isFluidCrafting({ name = name }) then
                 me.craftFluid({ name = name, amount = math.ceil(toCraft/1000) })
             end
+            print("Commande de " .. math.ceil(toCraft/1000) .. " " .. label)
         else
             CenterT(amount .. "/" .. threshold, row, colors.black, colors.red, "right", true)
             if not me.isItemCrafting({ name = name }) then
                 me.craftItem({ name = name, amount = toCraft })
             end
+            print("Commande de " .. toCraft .. " " .. label)
         end
-        print("Commande de " .. toCraft .. " " .. label)
+        
     else
         if isFluid then
             CenterT(amount/1000 .. "B/" .. threshold/1000 .. "B", row, colors.black, colors.green, "right", true)
