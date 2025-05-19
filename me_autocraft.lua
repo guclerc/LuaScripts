@@ -60,13 +60,30 @@ function prepareMonitor(label)
     CenterT(label, 1, colors.black, colors.white, "head", false)
 end
 
+-- Recupere un fluide
+function getFluid(name)
+    local fluids = me.listFluids()
+    for _, fluid in ipairs(fluids) do
+        if fluid.name == name then
+            return fluid
+        end
+    end
+    return nil
+end
+
 -- Vérifie un item
 function checkMe(item)
     local name = item.name
     local label = item.label
     local threshold = tonumber(item.threshold)
+    local isFluid = item.isFluid or false
 
-    local meItem = me.getItem({ name = name })
+    local meItem
+    if isFluid then
+        meItem = getFluid(name)
+    else
+        meItem = me.getItem({ name = name })
+    end
     if not meItem then
         print("Introuvable dans le ME : " .. name)
         return
@@ -78,12 +95,17 @@ function checkMe(item)
 
     if amount < threshold then
         CenterT(amount .. "/" .. threshold, row, colors.black, colors.red, "right", true)
-
-        if not me.isItemCrafting({ name = name }) then
-            local toCraft = threshold - amount
-            me.craftItem({ name = name, count = toCraft })
-            print("Craft de " .. toCraft .. " " .. label)
+        local toCraft = threshold - amount
+        if isFluid then
+            if not me.isFluidCrafting({ name = name }) then
+                me.craftFluid({ name = name, amount = toCraft })
+            end
+        else
+            if not me.isItemCrafting({ name = name }) then
+                me.craftItem({ name = name, amount = toCraft })
+            end
         end
+        print("Commande de " .. toCraft .. " " .. label)
     else
         CenterT(amount .. "/" .. threshold, row, colors.black, colors.green, "right", true)
     end
@@ -152,7 +174,7 @@ end
 
 -- Affichage du help
 function help()
-    print("Commandes : quit (q), add (a), delete (d), threshold (t), name (n), label (l), get (g)")
+    print("Commandes : quit (q), add (a), addFluid (af), delete (d), threshold (t), name (n), label (l), get (g)")
 end
 
 -- Boucle d'interface pc
@@ -177,10 +199,20 @@ function commandLoop()
             if label and name and threshold then
                 table.insert(config, { label = label, name = name, threshold = threshold })
                 saveConfig(config)
-                print("Ajoute : " .. label)
+                print("Ajout item : " .. label)
             else
                 print("Usage : add <label> <name> <threshold>")
             end
+            elseif cmd == "addfluid" or cmd == "af" then
+                local label, name, threshold = normalizeLabel(args[2]), args[3], tonumber(args[4])
+                if label and name and threshold then
+                    table.insert(config, { label = label, name = name, threshold = threshold, isFluid = true })
+                    saveConfig(config)
+                    print("Ajout fluide : " .. label)
+                else
+                    print("Usage : addfluid <label> <name> <threshold>")
+                end
+
 
         elseif cmd == "delete" or cmd == "d" then
             local label = normalizeLabel(args[2])
@@ -236,6 +268,7 @@ function commandLoop()
                 print("Label: " .. item.label)
                 print("Name: " .. item.name)
                 print("Threshold: " .. item.threshold)
+                print("Fluide: " .. tostring(item.isFluid or false))
             else
                 print("Introuvable : " .. (label or ""))
             end
