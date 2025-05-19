@@ -100,14 +100,14 @@ function checkMe(item)
         if isFluid then
             CenterT(amount/1000 .. "B/" .. threshold/1000 .. "B", row, colors.black, colors.red, "right", true)
             if not me.isFluidCrafting({ name = name }) then
-                me.craftFluid({ name = name, amount = math.ceil(toCraft/1000) })
-                print("Commande de " .. math.ceil(toCraft/1000) .. " " .. name)
+                me.craftFluid({ name = name, amount = toCraft })
+                print("Commande de " .. toCraft .. " " .. name)
             end
         else
             CenterT(amount .. "/" .. threshold, row, colors.black, colors.red, "right", true)
             if not me.isItemCrafting({ name = name }) then
                 me.craftItem({ name = name, amount = toCraft })
-                print("Commande de " .. toCraft .. " " .. label)
+                print("Commande de " .. toCraft .. " " .. name)
             end
         end
         
@@ -215,7 +215,7 @@ function commandLoop()
             elseif cmd == "addfluid" or cmd == "af" then
                 local label, name, threshold = normalizeLabel(args[2]), args[3], tonumber(args[4])
                 if label and name and threshold then
-                    table.insert(config, { label = label, name = name, threshold = threshold, isFluid = true })
+                    table.insert(config, { label = label, name = name, threshold = threshold*1000, isFluid = true })
                     saveConfig(config)
                     print("Ajout fluide : " .. label)
                 else
